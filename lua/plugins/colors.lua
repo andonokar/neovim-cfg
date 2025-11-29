@@ -16,9 +16,6 @@ return {
     {
         "EdenEast/nightfox.nvim",
         enabled = true,
-        config = function()
-            -- No additional setup needed unless you have specific settings for nightfox
-        end
     },
     {
         "projekt0n/github-nvim-theme",
