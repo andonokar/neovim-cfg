@@ -28,6 +28,7 @@ return {
                     "pyright",
                     "gopls",
                     "clangd",
+                    "bashls"
                 },
             })
             local cmp = require('cmp')

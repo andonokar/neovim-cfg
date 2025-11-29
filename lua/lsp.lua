@@ -35,4 +35,6 @@ vim.lsp.config('*', {
     capabilities = capabilities
 })
 
+vim.lsp.enable({ 'lua_ls', 'pyright', 'lsp_ruff', 'metals', 'gopls', 'clangd', 'bashls' })
+
 vim.diagnostic.config({ virtual_text = true, })
