@@ -30,5 +30,9 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
+
+-- sync os clipboard with neovim's
+vim.opt.clipboard = 'unnamedplus'
+
 -- line wrapping
 vim.opt.wrap = false
