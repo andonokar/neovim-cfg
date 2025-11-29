@@ -11,6 +11,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("wozzyaq.lazy")
+require("lazy").setup({
+    spec = {
+        { import = "wozzyaq.plugins"}
+    }
+})
 
 

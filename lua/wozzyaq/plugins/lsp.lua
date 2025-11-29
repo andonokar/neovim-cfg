@@ -1,6 +1,7 @@
 return {
     {
         "VonHeikemen/lsp-zero.nvim",
+        enabled = true,
         branch = "v3.x",
         dependencies = {
             -- lsp support
@@ -11,20 +12,13 @@ return {
             { "neovim/nvim-lspconfig" },
             -- metals support
             { "scalameta/nvim-metals" },
-            {"nvim-lua/plenary.nvim"},
+            { "nvim-lua/plenary.nvim" },
             -- autocompletion
             { "hrsh7th/nvim-cmp" },
             { "hrsh7th/cmp-buffer" },
             { "hrsh7th/cmp-path" },
             { "hrsh7th/cmp-nvim-lsp" },
-            { "hrsh7th/cmp-nvim-lua" },
-
-            -- snippets
-            { "rafamadriz/friendly-snippets" },
-            { "L3MON4D3/LuaSnip" },
-
-            -- null ls
-            { "jose-elias-alvarez/null-ls.nvim" },
+            { "L3MON4D3/LuaSnip", }
         },
         config = function()
             local lsp_zero = require('lsp-zero')
@@ -34,26 +28,24 @@ return {
                 end
                 local opts = { buffer = bufnr, remap = false }
                 lsp_zero.default_keymaps({ buffer = bufnr })
-
                 -- use telescope's go-to references
                 local telescope = require('telescope.builtin')
                 if client.name ~= 'metals' then
                     vim.keymap.set('n', 'gr', telescope.lsp_references, opts)
                     vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-                    vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+                    vim.keymap.set('n', 'gd', telescope.lsp_definitions, opts)
                     vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
                     vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
                     vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
                     vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
                     vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-                    vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+                    vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
                     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
                     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
                     vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
                     vim.keymap.set('n', '<leader>q', '<cmd>lua vim.diagnostic.open_float(0, {scope = "line"})<cr>', opts)
                 end
             end)
-
 
             require("mason").setup({})
             require("mason-lspconfig").setup({
@@ -68,9 +60,7 @@ return {
                 },
             })
 
-
-            require('lspconfig').lua_ls.setup({})
-            require('lspconfig').gopls.setup({
+            vim.lsp.config['gopls'] = {
                 capabilities = lsp_zero.get_capabilities(),
                 settings = {
                     gopls = {
@@ -80,35 +70,16 @@ return {
                         staticcheck = true,
                     },
                 },
-            })
-            require('lspconfig').pyright.setup({
-                capabilities = lsp_zero.get_capabilities(),
-                settings = {
-                    pyright = {
-                        -- use Ruff's organizer
-                        disableOrganizeImports = true
-                    },
-                    python = {
-                        --analysis = {
-                        --    ignore = { '*' },
-                        --},
-                    },
-                },
-            })
-           require('lspconfig').lsp_ruff.setup({
-               init_options = {
-                    settings = {
-                        args = {}
-                    }
-                }
-            })
+            }
+            vim.lsp.enable('gopls')
 
-        require('lspconfig').clangd.setup({
-          cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
-          init_options = {
-            fallbackFlags = { '-std=c++17' },
-          },
-        })
+            vim.lsp.config['clangd'] = {
+                cmd = { 'clangd', '--background-index', '--clang-tidy', '--log=verbose' },
+                init_options = {
+                },
+            }
+            vim.lsp.enable('clangd')
+
             local cmp = require('cmp')
             cmp.setup({
                 window = {
@@ -116,6 +87,7 @@ return {
                     completion = cmp.config.window.bordered(),
                     documentation = cmp.config.window.bordered(),
                 },
+                ---@diagnostic disable-next-line: undefined-field
                 mapping = cmp.mapping.preset.insert({
                     ['<Tab>'] = cmp.mapping.select_next_item(),
                     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
@@ -128,23 +100,90 @@ return {
             })
 
             -- Metals configuration
+            ---@diagnostic disable-next-line: undefined-field
             local metals_config = require("metals").bare_config()
             metals_config.settings = {
                 showImplicitArguments = true,
+                showInferredType = true,
+                showImplicitConversionsAndClasses = true,
                 excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
             }
-
             -- Based on https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/quick-recipes.md#setup-with-nvim-metals
             -- seemingly, we need to share lsp_zero capabilities to metals config
-            metals_config.capabilities = lsp_zero.get_capabilities()
-            local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = { "scala", "sbt", "java" },
-                callback = function()
-                    require("metals").initialize_or_attach(metals_config)
-                end,
-                group = nvim_metals_group,
-            })
+            --metals_config.capabilities = lsp_zero.get_capabilities()
+            --local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+            --vim.api.nvim_create_autocmd("FileType", {
+            --    pattern = { "scala", "sbt", "java", "scala.worksheet.scala.worksheet.sc"},
+            --    callback = function()
+            --        require("metals").initialize_or_attach(metals_config)
+            --    end,
+            --    group = nvim_metals_group,
+            --})
+
+            vim.lsp.config['metals'] = {
+                settings = metals_config.settings
+            }
+            vim.lsp.enable('metals')
+
+
+            vim.lsp.config['lua_ls'] = {
+                -- Command and arguments to start the server.
+                cmd = { 'lua-language-server' },
+                -- Filetypes to automatically attach to.
+                filetypes = { 'lua' },
+                -- Sets the "workspace" to the directory where any of these files is found.
+                -- Files that share a root directory will reuse the LSP server connection.
+                -- Nested lists indicate equal priority, see |vim.lsp.Config|.
+                root_markers = { { '.luarc.json', '.luarc.jsonc' }, '.git' },
+                -- Specific settings to send to the server. The schema is server-defined.
+                -- Example: https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json
+                settings = {
+                    Lua = {
+                        runtime = {
+                            version = 'LuaJIT',
+                        },
+                        diagnostics = {
+                            globals = { 'vim' }
+                        },
+                        workspace = {
+                            -- Make the server aware of Neovim runtime files
+                            library = vim.api.nvim_get_runtime_file("", true),
+                        },
+                        telemetry = {
+                            enable = false
+                        }
+                    }
+                }
+            }
+            vim.lsp.enable('lua_ls')
+
+
+            vim.lsp.config['pyright'] = {
+                capabilities = lsp_zero.get_capabilities(),
+                settings = {
+                    pyright = {
+                        -- use Ruff's organizer
+                        disableOrganizeImports = true
+                    },
+                    python = {
+                        analysis = {
+                            ignore = { '*' }
+                        },
+                    },
+                },
+            }
+            vim.lsp.config['lsp_ruff'] = {
+                init_options = {
+                    settings = {
+                        args = {}
+                    }
+                }
+            }
+            vim.lsp.enable('pyright')
+            vim.lsp.enable('lsp_ruff')
+
+            vim.diagnostic.config({ virtual_text = true, })
         end
+
     },
 }

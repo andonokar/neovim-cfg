@@ -2,6 +2,7 @@ return {
     -- vscode.nvim configuration
     {
         "Mofiqul/vscode.nvim",
+        enabled = true,
         config = function()
             require('vscode').setup({
                 transparent = true,
@@ -16,6 +17,7 @@ return {
     -- nightfox.nvim configuration
     {
         "EdenEast/nightfox.nvim",
+        enabled = true,
         config = function()
             -- No additional setup needed unless you have specific settings for nightfox
         end
@@ -23,6 +25,7 @@ return {
 
     {
         "projekt0n/github-nvim-theme",
+        enabled = true,
         config = function()
             require('github-theme').setup({
             })
