@@ -13,8 +13,6 @@ return {
             })
         end
     },
-
-    -- nightfox.nvim configuration
     {
         "EdenEast/nightfox.nvim",
         enabled = true,
@@ -22,7 +20,6 @@ return {
             -- No additional setup needed unless you have specific settings for nightfox
         end
     },
-
     {
         "projekt0n/github-nvim-theme",
         enabled = true,
