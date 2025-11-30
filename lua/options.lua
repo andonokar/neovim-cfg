@@ -19,6 +19,9 @@ o.wrap = false
 o.hlsearch = false
 o.incsearch = true
 
+-- show effects of commands as you type
+o.inccommand = 'split'
+
 o.termguicolors = true
 
 -- sticky scroll
@@ -39,3 +42,7 @@ o.clipboard = 'unnamedplus'
 o.wrap = false
 
 o.winborder = 'rounded'
+
+-- highlight current line number
+o.cursorline = true
+o.cursorlineopt = 'number'
