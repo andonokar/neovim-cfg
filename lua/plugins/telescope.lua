@@ -3,10 +3,13 @@ return {
     enabled = true,
     dependencies = {
         "nvim-lua/plenary.nvim",
+        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
     },
-    tag = "0.1.8",
+    tag = "v0.2.0",
     config = function()
+        local telescope = require("telescope")
         local builtin = require('telescope.builtin')
+        local themes = require('telescope.themes')
 
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
         vim.keymap.set('n', '<C-p>', builtin.git_files, { desc = 'Telescope git files' })
@@ -19,22 +22,21 @@ return {
 
         vim.keymap.set('n', '<leader>/', function()
             builtin.current_buffer_fuzzy_find(
-                require('telescope.themes').get_dropdown {
+                themes.get_dropdown {
                     winblend = 10,
                     previewer = false,
                 }
             )
-        end, { desc = '[/] Fuzzily search in current buffer'})
+        end, { desc = '[/] Fuzzily search in current buffer' })
 
         vim.keymap.set('n', '<leader>sn', function()
             builtin.find_files {
                 cwd = vim.fn.stdpath 'config'
             }
-        end, { desc = '[S]earch [N]eovim files'})
+        end, { desc = '[S]earch [N]eovim files' })
 
-        local telescope = require("telescope")
         -- requires metals installed
-        vim.keymap.set('n', '<leader>mc', telescope.extensions.metals.commands, { desc = 'Telescope Metals Menu' })
+        vim.keymap.set('n', '<leader>mc', telescope.extensions.metals.commands, { desc = 'Search [M]etals [C]ommands'})
     end
 
 }
