@@ -1,40 +1,41 @@
-local opt = vim.opt
+local o = vim.o
 
 -- make tab behave as 4 spaces
-opt.tabstop = 4
-opt.softtabstop = 4
-opt.shiftwidth = 4
-opt.expandtab = true
+o.tabstop = 4
+o.softtabstop = 4
+o.shiftwidth = 4
+o.expandtab = true
 
 -- enable relative numbers
-opt.nu = true
-opt.relativenumber = true
+o.nu = true
+o.relativenumber = true
 
 -- disable info
-opt.showmode = false
+o.showmode = false
 
 -- disable line wraps
-opt.wrap = false
+o.wrap = false
 
-opt.hlsearch = false
-opt.incsearch = true
+o.hlsearch = false
+o.incsearch = true
 
-opt.termguicolors = true
+o.termguicolors = true
 
 -- sticky scroll
-opt.scrolloff = 8
+o.scrolloff = 8
 
-opt.colorcolumn = "120"
+o.colorcolumn = "120"
 
-opt.swapfile = false
-opt.backup = false
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-opt.undofile = true
+o.swapfile = false
+o.backup = false
+o.undodir = os.getenv("HOME") .. "/.vim/undodir"
+o.undofile = true
 
 
 -- sync os clipboard with neos
-opt.clipboard = 'unnamedplus'
+o.clipboard = 'unnamedplus'
 
 -- line wrapping
-opt.wrap = false
+o.wrap = false
 
+o.winborder = 'rounded'
