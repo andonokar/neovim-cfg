@@ -1,7 +1,8 @@
 vim.g.mapleader = " "
 local set = vim.keymap.set
 
-set("n", "<leader>pv", vim.cmd.Ex)
+-- Using OIL since 2025/12/01
+--set("n", "<leader>pv", vim.cmd.Ex)
 
 --set('', '<leader>y', '"+y', { desc = 'Yank to clipboard' })
 set('', '<leader>Y', '"+y$', { desc = 'Yank until EOL to clipboard' })
