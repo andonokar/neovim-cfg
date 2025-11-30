@@ -5,7 +5,11 @@ return {
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
     lazy = false,
     config = function ()
-        require('oil').setup({})
+        require('oil').setup({
+            view_options = {
+                show_hidden = true
+            }
+        })
         vim.keymap.set("n", "<leader>pv", "<CMD>Oil<CR>")
     end
 }
