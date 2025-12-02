@@ -1,40 +1,54 @@
--- FIXME: need to figure out how to properly attach capabilities and mappings LSP + telescope 
-local lsp_zero = require('lsp-zero')
-lsp_zero.on_attach(function(client, bufnr)
+local function on_attach(args)
+    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
     if client.name == 'ruff_lsp' then
         client.server_capabilities.hoverProvider = false
     end
-    local opts = { buffer = bufnr, remap = false }
-    lsp_zero.default_keymaps({ buffer = bufnr })
+    local opts = { buffer = args.buf, remap = false }
     -- use telescope's go-to references
     local telescope = require('telescope.builtin')
-        vim.keymap.set('n', 'gr', telescope.lsp_references, opts)
-        vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-        vim.keymap.set('n', 'gd', telescope.lsp_definitions, opts)
-        vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
-        vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
-        vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
-        vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
-        vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-        vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
-        vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-        vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', opts)
-        vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', opts)
-        vim.keymap.set('n', '<leader>q', '<cmd>lua vim.diagnostic.open_float(0, {scope = "line"})<cr>', opts)
-end)
+    vim.keymap.set('n', 'gr', telescope.lsp_references, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gd', telescope.lsp_definitions, opts)
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, opts)
 
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
-local capabilities = lsp_zero.get_capabilities()
+    vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'x' }, 'gq', function() vim.lsp.buf.format({ async = true }) end, opts)
+    vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+    vim.keymap.set('n', '<leader>q', function() vim.diagnostic.open_float({ scope = "line" }) end, opts)
+end
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('my.lsp', {}),
+    callback = on_attach
+})
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend('force', capabilities, {
     offsetEncoding = { 'utf-16' },
     general = {
-      positionEncodings = { 'utf-16' },
+        positionEncodings = { 'utf-16' },
     },
-  })
+})
 vim.lsp.config('*', {
     capabilities = capabilities
 })
 
-vim.lsp.enable({ 'lua_ls', 'pyright', 'lsp_ruff', 'metals', 'gopls', 'clangd', 'bashls' })
+local metals_config = require("metals").bare_config()
+metals_config.capabilities = capabilities
+
+local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "scala", "java", "sbt", "sc" },
+    callback = function()
+        require("metals").initialize_or_attach(metals_config)
+    end,
+    group = nvim_metals_group,
+})
+vim.lsp.enable({ 'lua_ls', 'pyright', 'lsp_ruff', 'metals', 'gopls', 'bashls' })
 
 vim.diagnostic.config({ virtual_text = true, })
