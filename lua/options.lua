@@ -46,3 +46,6 @@ o.winborder = 'rounded'
 -- highlight current line number
 o.cursorline = true
 o.cursorlineopt = 'number'
+
+-- so diagnostics don't jump
+o.signcolumn = 'yes'
