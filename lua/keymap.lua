@@ -14,6 +14,7 @@ set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected line down" })
 set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected line up" })
 
 -- to exit terminal mode via esc
-set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
 
+set('n', 'x', '<Del>', { noremap = true})
 
