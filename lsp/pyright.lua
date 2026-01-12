@@ -6,7 +6,10 @@ return {
         },
         python = {
             analysis = {
-                ignore = { '*' }
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            diagnosticMode = "workspace",
+            typeCheckingMode = "basic"
             },
         },
     },
