@@ -6,6 +6,12 @@ o.softtabstop = 4
 o.shiftwidth = 4
 o.expandtab = true
 
+vim.filetype.add({
+    extension = {
+        ixx = "cpp",
+    },
+})
+
 -- enable relative numbers
 o.nu = true
 o.relativenumber = true

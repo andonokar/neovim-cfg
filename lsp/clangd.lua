@@ -1,6 +1,6 @@
 return {
-    cmd = { 'clangd', '--background-index', '--clang-tidy', '--log=verbose' },
+    cmd = { 'clangd', '--background-index', '--clang-tidy', '--log=verbose', '--experimental-modules-support'},
     init_options = {
     },
-    filetypes = {'c', 'cpp'},
+    filetypes = {'c', 'cpp', 'ixx', 'h', 'hpp'},
 }

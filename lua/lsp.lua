@@ -49,6 +49,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
     group = nvim_metals_group,
 })
-vim.lsp.enable({ 'lua_ls', 'pyright', 'lsp_ruff', 'metals', 'gopls', 'bashls' })
+
+vim.lsp.enable({ 'lua_ls', 'pyright', 'lsp_ruff', 'metals', 'gopls', 'bashls', 'clangd' })
 
 vim.diagnostic.config({ virtual_text = true, })
