@@ -9,7 +9,6 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "pyright",
-                "gopls",
                 "clangd",
                 "bashls"
             },
